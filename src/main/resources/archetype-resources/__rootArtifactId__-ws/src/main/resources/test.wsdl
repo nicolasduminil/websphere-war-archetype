@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://www.alphacredit.be/tests/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  name="TestService" targetNamespace="http://www.alphacredit.be/tests/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://www.alphacredit.be/tests/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+      <xsd:element name="testStringInput">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="range">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:integer">
+                  <xsd:minInclusive value="0" />
+                  <xsd:maxInclusive value="120" />
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="enum">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:enumeration value="Audi" />
+                  <xsd:enumeration value="Golf" />
+                  <xsd:enumeration value="BMW" />
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="fiveDigits">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:integer">
+                  <xsd:pattern value="[0-9][0-9][0-9][0-9][0-9]" />
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="testStringOutput">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="testOutput" type="xsd:string" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="testStringFault">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="testFault" type="xsd:string"></xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="testOperationRequest">
+    <wsdl:part element="tns:testStringInput" name="testInput" />
+  </wsdl:message>
+  <wsdl:message name="testOperationResponse">
+    <wsdl:part element="tns:testStringOutput" name="testOutput" />
+  </wsdl:message>
+  <wsdl:message name="testOperationException">
+    <wsdl:part name="testFault" element="tns:testStringFault"></wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="TestServicePortType">
+    <wsdl:operation name="testOperation">
+      <wsdl:input message="tns:testOperationRequest" name="testOperationInput" />
+      <wsdl:output message="tns:testOperationResponse" name="testOperationOutput" />
+      <wsdl:fault name="testOperationFaultfault" message="tns:testOperationException"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="TestSOAP" type="tns:TestServicePortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="testOperation">
+      <soap:operation soapAction="testOperation" style="document" />
+      <wsdl:input name="testOperationInput">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="testOperationOutput">
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="testOperationFaultfault">
+        <soap:fault name="testOperationFaultfault" use="literal" />
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="TestService">
+    <wsdl:port binding="tns:TestSOAP" name="TestServicePort">
+      <soap:address location="service/TestService" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
